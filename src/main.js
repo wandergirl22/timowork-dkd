@@ -17,6 +17,11 @@ import "@/permission"; // permission control
 
 // 注册自定义指令
 import * as directives from "@/directives";
+
+// 注册自定义组件
+import zzlUI from '@/components/index'
+Vue.use(zzlUI)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
