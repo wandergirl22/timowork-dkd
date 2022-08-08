@@ -36,9 +36,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="color: #5f84ff">
-              查看详情
-            </el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)" style="color: #5f84ff">查看详情</el-button>
             <el-button size="mini" style="color: #5f84ff" @click="ShowEditRegion(scope.row)">修改</el-button>
             <el-button size="mini" @click="delTableList(scope.row)" style="color: red">删除</el-button>
           </template>
@@ -54,8 +52,10 @@
         :total="tableInfo.totalCount"
       ></el-pagination>
     </el-card>
-    <!-- 弹层 -->
+    <!-- 新增和修改弹层 -->
     <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogVue"></Dialog>
+    <!-- 查看详情弹层 -->
+    <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogInfo"></Dialog>
   </div>
 </template>
 <script>
@@ -85,8 +85,9 @@ export default {
     search() {
       this.gettableData(this.tableInfo.pageIndex)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
+    handleEdit(row) {
+      this.dialogVisible = true
+      console.log(row)
     },
     // 渲染列表
     async gettableData(pageIndex) {
