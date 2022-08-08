@@ -8,20 +8,28 @@
           <div class="grid-content bg-purple headerBox bgc1">
             <div class="title">
               工单统计
-              <span>2022.08.01 ~ 2022.08.07</span>
+              <span>{{ endatd }} ~ {{ statd }}</span>
             </div>
             <el-row :gutter="20">
               <el-col :span="6">
                 <div class="home-user-task-stats">
-                  <p>56</p>
+                  <p>{{ ticketStatistics.total }}</p>
                 </div>
                 <div class="text-color2">
-                  <p>进行工单（个）</p>
+                  <p>工单总数（个）</p>
                 </div>
               </el-col>
               <el-col :span="6">
                 <div class="home-user-task-stats">
-                  <p>56</p>
+                  <p>{{ ticketStatistics.completedTotal }}</p>
+                  <div class="text-color2">
+                    <p>完成工单（个）</p>
+                  </div>
+                </div>
+              </el-col>
+              <el-col :span="6">
+                <div class="home-user-task-stats">
+                  <p>{{ ticketStatistics.progressTotal || '0' }}</p>
                   <div class="text-color2">
                     <p>进行工单（个）</p>
                   </div>
@@ -29,17 +37,9 @@
               </el-col>
               <el-col :span="6">
                 <div class="home-user-task-stats">
-                  <p>56</p>
+                  <p>{{ ticketStatistics.cancelTotal }}</p>
                   <div class="text-color2">
-                    <p>进行工单（个）</p>
-                  </div>
-                </div>
-              </el-col>
-              <el-col :span="6">
-                <div class="home-user-task-stats">
-                  <p>56</p>
-                  <div class="text-color2">
-                    <p>进行工单（个）</p>
+                    <p>取消工单（个）</p>
                   </div>
                 </div>
               </el-col>
@@ -49,23 +49,23 @@
         <el-col :span="7">
           <div class="grid-content bg-purple headerBox bgc2">
             <div class="title">
-              工单统计
-              <span>2022.08.01 ~ 2022.08.07</span>
+              销售统计
+              <span>{{ endatd }} ~ {{ statd }}</span>
             </div>
             <el-row :gutter="20">
               <el-col :span="12">
                 <div class="home-user-task-stats">
-                  <p style="color: red">1660</p>
+                  <p style="color: red">{{ order }}</p>
                 </div>
                 <div class="text-color2">
-                  <p>进行工单（个）</p>
+                  <p>订单量（个）</p>
                 </div>
               </el-col>
               <el-col :span="12">
                 <div class="home-user-task-stats">
-                  <p style="color: red">1995</p>
+                  <p style="color: red">{{ Count }}</p>
                   <div class="text-color2">
-                    <p>进行工单（个）</p>
+                    <p>销售额（万元）</p>
                   </div>
                 </div>
               </el-col>
@@ -80,35 +80,70 @@
           <div class="grid-content bg-purple" style="min-height: 365px">
             <div class="title">
               工单统计
-              <span>2022.08.01 ~ 2022.08.07</span>
-              <el-radio-group v-model="radio1" size="mini" style="margin-left: 390px; background-color: red">
-                <el-radio-button label="周"></el-radio-button>
-                <el-radio-button label="月"></el-radio-button>
-                <el-radio-button label="年"></el-radio-button>
+              <span>{{ endatd }} ~ {{ statd }}</span>
+              <el-radio-group v-model="radio1" size="mini" style="margin-left: 390px" @change="changes">
+                <el-radio-button label="周" @click="dyat = 7"></el-radio-button>
+                <el-radio-button label="月" @click="dyat = 30"></el-radio-button>
+                <el-radio-button label="年" @click="dyat = 360"></el-radio-button>
               </el-radio-group>
             </div>
-
+            <!-- 中间echars -->
             <div class="boxEchars">
-              <div class="echars2" id="echars2"></div>
               <div class="echars1" id="echars"></div>
+              <div class="echars2" id="echars2"></div>
             </div>
           </div>
         </el-col>
         <!-- 中间和右边 -->
-
         <el-col :span="6">
-          <div class="grid-content bg-purple" style="height: 538px; margin-top: -170px">最右边</div>
+          <div class="grid-content bg-purple" style="height: 538px; margin-top: -170px">
+            <div class="title">
+              商品热榜
+              <span>{{ endatd }} ~ {{ statd }}</span>
+            </div>
+            <el-table v-for="(item, index) in SkuTop" :key="index" :data="SkuTop" style="width: 100%">
+              <el-table-column
+                prop="order"
+                width="50"
+                style="background: url(~@/assets/order/4.png)"
+                type="index"
+              ></el-table-column>
+
+              <el-table-column prop="skuName" width="120" class-name="name"></el-table-column>
+
+              <el-table-column prop="count" class-name="count"></el-table-column>
+            </el-table>
+          </div>
         </el-col>
       </el-row>
       <!-- 底部一个 -->
       <el-row :gutter="20" style="margin-bottom: 20px">
         <el-col :span="13">
-          <div class="grid-content bg-purple left" style="min-height: 300px">
-            <div class="echars3" id="echars3"></div>
+          <div class="grid-content bg-purple" style="min-height: 300px">
+            <div class="title">
+              合作商点位数Top5
+              <span class="el-icon-s-unfold moreIcon"></span>
+            </div>
+            <div class="cooperate">
+              <!-- 合作区域 -->
+              <div class="pieChart" id="pieCharts"></div>
+              <div class="Points">
+                <p>{{ NodeCount }}</p>
+                <span>点位数</span>
+                <p>{{ PrtnerCount }}</p>
+                <span>合作商</span>
+              </div>
+            </div>
           </div>
         </el-col>
         <el-col :span="10">
-          <div class="grid-content bg-purple right" style="min-height: 300px">123456</div>
+          <div class="grid-content bg-purple" style="min-height: 300px">
+            <div class="title">
+              异常设备监控
+              <span class="el-icon-s-unfold moreIcon2"></span>
+            </div>
+            <div class="empenty"></div>
+          </div>
         </el-col>
       </el-row>
     </div>
@@ -116,37 +151,138 @@
 </template>
 
 <script>
+import {
+  getUserWork,
+  getregionCollect,
+  getregionOrderCount,
+  getregionAmountCollect,
+  getNodeCount,
+  getPrtnerCount,
+  getnodeCollect,
+  getSkuTop,
+  getOrderAmount
+} from '@/api/stagings'
 import dayjs from 'dayjs'
 
-import { getUserWork, getregionCollect } from '@/api/stagings'
 export default {
   name: 'home',
   data() {
     return {
-      radio1: '周'
+      NodeCount: '',
+      PrtnerCount: '',
+      NodeCount: '',
+      radio1: '周',
+      ticketStatistics: {},
+      order: '',
+      Count: '',
+      datatni: [],
+      series: [],
+      tableData: [],
+      nodeCollect: [],
+      SkuTop: [],
+      cylinderSeries: [],
+      cylinderXAxis: [],
+      dyat: 30
     }
   },
+
   computed: {
+    // 时间区域
     td() {
       return dayjs().format('YYYY-MM-DD HH:mm:ss')
     },
     atd() {
-      return dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss')
+      return dayjs().subtract(this.dyat, 'day').format('YYYY-MM-DD HH:mm:ss')
+    },
+    statd() {
+      return dayjs().format('YYYY-MM-DD')
+    },
+    endatd() {
+      return dayjs().subtract(this.dyat, 'day').format('YYYY-MM-DD')
     }
   },
-  mounted() {
-    this.myEcharts()
-    this.myEcharts2()
-    this.myEcharts3()
-    this.getUserWork()
+  created() {
+    this.getregionAmountCollect()
+    this.getUserWorks()
     this.getregionCollect()
+    this.getregionOrderCount()
+    this.getNodeCount()
+    this.getPrtnerCount()
+    this.getnodeCollect()
+    this.getSkuTop()
+    this.getOrderAmount()
   },
+  mounted() {},
   methods: {
+    // 改变时间事件
+    changes() {
+      if (this.radio1 == '周') {
+        this.dyat = 7
+      } else if (this.radio1 == '月') {
+        this.dyat = 30
+      } else {
+        this.dyat = 360
+      }
+      this.getOrderAmount()
+      this.getregionAmountCollect()
+    },
+    // 柱状图
+    async getOrderAmount() {
+      const res = await getOrderAmount(this.endatd, this.statd)
+      this.cylinderXAxis = res.data.xAxis
+      this.cylinderSeries = res.data.series
+      this.myEcharts()
+    },
+    // 获取点位总数
+    async getNodeCount() {
+      const res = await getNodeCount()
+      this.NodeCount = res.data
+    },
+    // 获取合作商总数
+    async getPrtnerCount() {
+      const res = await getPrtnerCount()
+      this.PrtnerCount = res.data
+    },
+    // 合作商点位汇总统计饼状图
+    async getnodeCollect() {
+      const res = await getnodeCollect()
+      this.nodeCollect = res.data
+      this.myPieChart()
+    },
+    // top排行
+    async getSkuTop() {
+      const res = await getSkuTop(10, this.endatd, this.statd)
+      this.SkuTop = res.data
+    },
+    // 获取工单数量
+    async getUserWorks() {
+      const res = await getUserWork(this.atd, this.td)
+
+      this.ticketStatistics = res.data[0]
+    },
+    // 获取销售数量
+    async getregionOrderCount() {
+      const res = await getregionOrderCount({
+        start: this.atd,
+        end: this.td
+      })
+
+      this.order = res.data
+    },
+    // 获取总量数量
+    async getregionCollect() {
+      const res = await getregionCollect({
+        start: this.atd,
+        end: this.td
+      })
+      this.Count = (res.data / 1000000).toFixed(2)
+    },
+
     // 柱状图
     myEcharts() {
       // 基于准备好的dom，初始化echarts实例
-      const echarts = require('echarts')
-      var myChart = echarts.init(document.getElementById('echars'))
+      var echarts = require('echarts')
+      var myChart = echarts.init(document.getElementById('echars2'))
 
       // 指定图表的配置项和数据
       var option = {
@@ -157,7 +293,7 @@ export default {
 
         xAxis: {
           type: 'category',
-          data: ['北京平', '霍营街']
+          data: this.cylinderXAxis
         },
         yAxis: {
           type: 'value',
@@ -165,7 +301,7 @@ export default {
         },
         series: [
           {
-            data: [2800, 200],
+            data: this.cylinderSeries,
             barWidth: '5%',
             type: 'bar'
           }
@@ -175,21 +311,28 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option)
     },
-    // 折线图
+    // 获取线状图时间
+    async getregionAmountCollect() {
+      const res = await getregionAmountCollect(1, this.endatd, this.statd)
+      this.xAxis = res.data.xAxis
+      this.series = res.data.series
+      this.myEcharts2()
+    },
+    // 线性图
     myEcharts2() {
-      const echarts = require('echarts')
-      var myChart2 = echarts.init(document.getElementById('echars2'))
-
+      var echarts = require('echarts')
+      var myChart2 = echarts.init(document.getElementById('echars'))
       var option2 = {
         color: ['red'],
         title: {
           text: '销售额趋势图',
           left: 'center'
         },
+        grid: { top: '18%', left: '17%', right: '2%', bottom: '24%' },
         xAxis: {
           type: 'category',
-          data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
-          boundaryGap: false
+          data: this.xAxis,
+          boundaryGap: true
         },
         yAxis: {
           name: '单位/元',
@@ -197,7 +340,7 @@ export default {
         },
         series: [
           {
-            data: [45000, 18000, 2000, 2334, 5666, 77888, 333],
+            data: this.series,
             type: 'line'
           }
         ]
@@ -205,20 +348,26 @@ export default {
       myChart2.setOption(option2)
     },
     // 饼状图
-    myEcharts3() {
+    myPieChart() {
       // 基于准备好的dom，初始化echarts实例
-      const echarts = require('echarts')
-      var myChart3 = echarts.init(document.getElementById('echars3'))
+      var echarts = require('echarts')
+      var mypPieCharts = echarts.init(document.getElementById('pieCharts'))
 
       // 指定图表的配置项和数据
-      var option3 = {
+      var optionPie = {
         title: {
-          text: '合作商点位数Top5',
           left: 'left'
         },
+        grid: { top: '10%', left: '22%', right: '2%', bottom: '24%' },
         tooltip: {
           trigger: 'item',
           formatter: '{b}<br/>总占比 : {c}% '
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true }
+          }
         },
         series: [
           {
@@ -227,30 +376,13 @@ export default {
             radius: ['10%', '70%'],
             center: ['50%', '50%'],
             roseType: 'radius',
-            data: [
-              { value: 62.5, name: '金燕龙合作商' },
-              { value: 12.5, name: '天华物业' },
-              { value: 12.5, name: '北京合作商' },
-              { value: 6.25, name: 'likede' },
-              { value: 6.25, name: '佳佳' }
-            ]
+            data: this.nodeCollect
           }
         ]
       }
+
       // 使用刚指定的配置项和数据显示图表。
-      myChart3.setOption(option3)
-    },
-    async getUserWork() {
-      const res = await getUserWork({
-        userId: 1,
-        start: this.td(new Date()),
-        end: this.atd(new Date())
-      })
-      console.log(res)
-    },
-    async getregionCollect() {
-      const res = await getregionCollect('2020-10-01', '2020-10-31')
-      console.log(res)
+      mypPieCharts.setOption(optionPie)
     }
   }
 }
@@ -273,11 +405,131 @@ export default {
     flex: 1;
   }
 }
-.echars3 {
-  height: 280px;
-  width: 75%;
+::v-deep .el-table {
+  td:first-child {
+    .cell {
+      display: inline-block;
+      text-align: center;
+      width: 21px;
+      height: 20px;
+      margin-left: 2px;
+      padding-left: 6px;
+      text-align: center;
+      font-size: 12px;
+      font-family: zihun143-zhengkuchaojihei, zihun143;
+      font-weight: 400;
+      line-height: 14px;
+      background: url(~@/assets/order/4.png) no-repeat;
+      color: #e9b499;
+    }
+  }
+  td:nth-child(2) {
+    .cell {
+      height: 20px;
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #333;
+      line-height: 20px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  td:last-child {
+    height: 20px;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #737589;
+    line-height: 20px;
+    text-align: right;
+  }
 }
+::v-deep .el-table {
+  tr:nth-child(1) {
+    td:nth-child(1) {
+      .cell {
+        background: url(~@/assets/order/1.png);
+        color: #8e5900;
+      }
+    }
+  }
+  tr:nth-child(2) {
+    td:nth-child(1) {
+      .cell {
+        background: url(~@/assets/order/2.png);
+        color: #494949;
+      }
+    }
+  }
+  tr:nth-child(3) {
+    td:nth-child(1) {
+      .cell {
+        background: url(~@/assets/order/3.png);
+        color: #cf6d3d;
+      }
+    }
+  }
+}
+.moreIcon {
+  font-size: 22px !important;
+  margin-left: 400px !important;
+  color: #5f84ff !important;
+  cursor: pointer;
+}
+.moreIcon2 {
+  font-size: 22px !important;
+  margin-left: 250px !important;
+  color: #5f84ff !important;
+  cursor: pointer;
+}
+.empenty {
+  width: 100%;
+  height: 280px;
+  // background-color: red;
+}
+.cooperate {
+  width: 100%;
+  height: 280px;
 
+  margin-top: 25px;
+  // background-color: red;
+  display: flex;
+  .pieChart {
+    flex: 3;
+  }
+  .Points {
+    width: 154px;
+    height: 230px;
+    padding-top: 47px;
+    padding-left: 38px;
+    background: linear-gradient(135deg, transparent, #f8f8f9 0) 0 0,
+      linear-gradient(-135deg, transparent 12px, #f8f8f9 0) 100% 0,
+      linear-gradient(-45deg, transparent, #f8f8f9 0) 100% 100%,
+      linear-gradient(45deg, transparent 12px, #f8f8f9 0) 0 100%;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    p {
+      height: 33px;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      color: #072074;
+      line-height: 33px;
+    }
+    span {
+      height: 17px;
+      margin-top: 6px;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #000412;
+      line-height: 17px;
+    }
+  }
+}
 .title {
   -webkit-box-align: center;
   -ms-flex-align: center;
