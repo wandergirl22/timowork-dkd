@@ -1,8 +1,23 @@
 <template>
   <div>
     <el-card>
-      <zzl-Input title="区域搜索：" v-model="value"></zzl-Input>
-      <zzl-Button title="查询" icon="el-icon-search" backgroundColor="#5f84ff" @click="search"></zzl-Button>
+      <zzl-Input
+        title="点位搜索："
+        v-model="value"
+        placeholder="请输入"
+        @keyup.delete.native="keyUpDel"
+      ></zzl-Input>
+      <span>区域搜索：</span>
+      <el-select v-model="Areavalue" placeholder="请选择">
+        <el-option v-for="(item, index) in options" :key="index" :label="item" :value="item"></el-option>
+      </el-select>
+      <zzl-Button
+        title="查询"
+        icon="el-icon-search"
+        backgroundColor="#5f84ff"
+        @click="search"
+        style="margin-left: 15px"
+      ></zzl-Button>
     </el-card>
     <el-card>
       <zzl-Button
@@ -65,12 +80,18 @@
       ></el-pagination>
     </el-card>
     <!-- 弹层 -->
-    <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogVue"></Dialog>
+    <changePointdialogVue
+      :ChangedialogVisible.sync="ChangedialogVisible"
+      :rowId="rowId"
+      :partnerList="partnerList"
+      :regionSelect="regionSelect"
+      ref="changePoint"
+    ></changePointdialogVue>
   </div>
 </template>
 <script>
-import { businessListApi, NodeListApi } from '@/api/region'
-import Dialog from './components/dialog.vue'
+import { NodeListApi } from '@/api/region'
+import changePointdialogVue from './components/changePointdialog.vue'
 export default {
   name: 'region',
   props: {},
@@ -85,26 +106,39 @@ export default {
       },
       taskCode: '',
       value: '',
-      dialogVisible: false,
-      rowId: ''
+      Areavalue: '',
+      options: [],
+      partnerList: [],
+      ChangedialogVisible: false,
+      rowId: '',
+      regionSelect: []
     }
   },
   created() {},
   methods: {
+    // 渲染input
+    async inputFn() {
+      const { data } = await NodeListApi({ pageSize: 1000, name: this.value })
+      this.options = [...new Set(data.currentPageRecords.map((item) => item.region.name))]
+    },
     // 搜索
-    search() {
-      this.gettableData()
+    search() {},
+    keyUpDel() {
+      if (this.value.length === 0) {
+        this.gettableData(this.tableInfo.pageIndex)
+      }
     },
     handleEdit(index, row) {
       console.log(index, row)
     },
     // 渲染列表
-    async gettableData() {
-      // const data = await businessListApi()
+    async gettableData(pageIndex, pageSize) {
+      const { data } = await NodeListApi({ pageIndex: pageIndex, pageSize: pageSize, name: this.value })
 
-      const { data } = await NodeListApi({ pageIndex: this.tableInfo.pageIndex, pageSize: 10, name: this.value })
-      console.log(data, '点位管理')
+      this.partnerList = data.currentPageRecords.map((val) => val.ownerName)
+      this.regionSelect = data.currentPageRecords.map((val) => val.region.name)
       this.tableData = data.currentPageRecords
+
       this.tableInfo.totalCount = parseInt(data.totalCount)
       this.tableInfo.pageSize = parseInt(data.pageSize)
       this.tableInfo.totalPage = parseInt(data.totalPage)
@@ -128,28 +162,29 @@ export default {
     },
     // 显示添加功能
     ShowAddRegion() {
-      this.dialogVisible = true
+      this.ChangedialogVisible = true
     },
     // 显示修改功能
     ShowEditRegion(row) {
       console.log(row)
       this.rowId = row.id
-      this.$refs.dialogVue.formData.regionName = row.name
-      this.$refs.dialogVue.formData.remark = row.remark
-      this.dialogVisible = true
+      // this.$refs.dialogVue.formData.regionName = row.name
+      // this.$refs.dialogVue.formData.remark = row.remark
+      this.ChangedialogVisible = true
     }
   },
   computed: {},
   watch: {},
   mounted() {
-    this.gettableData()
+    this.gettableData(this.tableInfo.pageIndex, 10)
+    this.inputFn()
   },
   filters: {
     todeladdr(val) {
       return val.substring(val.lastIndexOf('-') + 1)
     }
   },
-  components: { Dialog }
+  components: { changePointdialogVue }
 }
 </script>
 <style scoped lang="scss">

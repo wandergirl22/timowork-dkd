@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-card>
-      <zzl-Input title="区域搜索：" v-model="value"></zzl-Input>
+      <zzl-Input
+        title="区域搜索："
+        v-model="value"
+        placeholder="请输入"
+        @keyup.delete.native="keyUpDel"
+      ></zzl-Input>
       <zzl-Button title="查询" icon="el-icon-search" backgroundColor="#5f84ff" @click="search"></zzl-Button>
     </el-card>
     <el-card>
@@ -55,12 +60,18 @@
     <!-- 新增和修改弹层 -->
     <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogVue"></Dialog>
     <!-- 查看详情弹层 -->
-    <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogInfo"></Dialog>
+    <DialogInfo
+      :dialogVisibleInfo="dialogVisibleInfo"
+      :regionName="regionName"
+      :regionData="regionData"
+    ></DialogInfo>
   </div>
 </template>
 <script>
-import { getregionListApi, delregionApi } from '@/api/region'
+import { getregionListApi, delregionApi, NodeListApi } from '@/api/region'
 import Dialog from './components/dialog.vue'
+import DialogInfo from './components/dialogInfo.vue'
+
 export default {
   name: 'region',
   props: {},
@@ -76,7 +87,10 @@ export default {
       taskCode: '',
       value: '',
       dialogVisible: false,
-      rowId: ''
+      dialogVisibleInfo: false,
+      rowId: '',
+      regionName: '',
+      regionData: []
     }
   },
   created() {},
@@ -85,9 +99,24 @@ export default {
     search() {
       this.gettableData(this.tableInfo.pageIndex)
     },
-    handleEdit(row) {
-      this.dialogVisible = true
-      console.log(row)
+    keyUpDel() {
+      if (this.value.length === 0) {
+        this.gettableData(this.tableInfo.pageIndex)
+      }
+    },
+
+    // 查看详情
+    async handleEdit(row) {
+      this.dialogVisibleInfo = true
+      const { data } = await NodeListApi({
+        pageIndex: this.tableInfo.pageIndex,
+        pageSize: 10,
+        name: row.name,
+        regionId: row.id
+      })
+      this.regionData = data.currentPageRecords
+      console.log(this.regionData, '222')
+      this.regionName = row.name
     },
     // 渲染列表
     async gettableData(pageIndex) {
@@ -134,7 +163,7 @@ export default {
   mounted() {
     this.gettableData(this.tableInfo.pageIndex)
   },
-  components: { Dialog }
+  components: { Dialog, DialogInfo }
 }
 </script>
 <style scoped lang="scss">

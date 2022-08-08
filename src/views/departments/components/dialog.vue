@@ -2,7 +2,7 @@
    
   <div>
        
-    <el-dialog title="新增区域" :visible="visiable" width="50%" :before-close="handleClose">
+    <el-dialog :title="title" :visible="visiable" width="50%" :before-close="handleClose">
          
       <el-form ref="form" :model="formData" :rules="formRules" label-width="100px">
                
@@ -81,18 +81,25 @@ export default {
       } finally {
         this.$parent.gettableData()
         this.$parent.dialogVisible = false
+        this.$parent.rowId = ''
       }
     },
     onCancel() {
       this.$parent.dialogVisible = false
+      this.$parent.rowId = ''
     },
     handleClose() {
+      this.$parent.rowId = ''
       this.$parent.dialogVisible = false
       this.$emit('updated:visible', false)
     }
   },
   mounted() {},
-  computed: {},
+  computed: {
+    title() {
+      return this.rowId.length > 0 ? '修改区域' : '新增区域'
+    }
+  },
   watch: {},
   updated() {},
   beforeDestroy() {},
