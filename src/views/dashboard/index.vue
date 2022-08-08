@@ -116,7 +116,8 @@
 </template>
 
 <script>
-const dayjs = require('dayjs')
+import dayjs from 'dayjs'
+
 import { getUserWork, getregionCollect } from '@/api/stagings'
 export default {
   name: 'home',
