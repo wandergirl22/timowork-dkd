@@ -16,19 +16,15 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 // 注册自定义指令
-<<<<<<< HEAD
 import * as directives from '@/directives'
 import 'echarts'
 import Echarts from 'vue-echarts'
 import dayjs from 'dayjs'
-=======
-import * as directives from "@/directives";
 
 // 注册自定义组件
 import zzlUI from '@/components/index'
 Vue.use(zzlUI)
 
->>>>>>> 1d538000e19ca7e0f84ddfb1bc571326ae15f2e0
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
