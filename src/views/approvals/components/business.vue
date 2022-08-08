@@ -34,33 +34,37 @@
               <slot>新建</slot>
             </el-button>
           </el-col>
-          <el-col :span="2"><el-button class="secondery" @click="workOrderShow = true"><slot>工单配置</slot></el-button></el-col>
+          <el-col :span="2">
+            <el-button class="secondery" @click="workOrderShow = true"><slot>工单配置</slot></el-button>
+          </el-col>
         </el-row>
         <!-- 新增工单dialog-->
-       <myAddOrder  :detailsFromCheck='detailsFromCheck' :dialogFormVisible='dialogFormVisible' @addOrderShowClose='addOrderShowClose'/>
-       <!-- 工单配置dialog -->
-       <el-dialog
-           title="提示"
-           :visible.sync="workOrderShow"
-           width="630px"
-           custom-class="el-dialog1"
-           >
-           <el-form>
-             <el-form-item label="补给警戒线" >
-                <el-input v-model="supplyValue"
-                style="width:400px"
-                ></el-input>
-                <!-- <el-button class="supplyValueBtn"><i class="el-icon-arrow-up"></i></el-button>
+        <myAddOrder
+          :detailsFromCheck="detailsFromCheck"
+          :dialogFormVisible="dialogFormVisible"
+          @addOrderShowClose="addOrderShowClose"
+        />
+        <!-- 工单配置dialog -->
+        <el-dialog title="提示" :visible.sync="workOrderShow" width="630px" custom-class="el-dialog1">
+          <el-form>
+            <el-form-item label="补给警戒线">
+              <el-input v-model="supplyValue" style="width: 400px"></el-input>
+              <!-- <el-button class="supplyValueBtn"><i class="el-icon-arrow-up"></i></el-button>
                 <el-button class="supplyValueBtn"><i class="el-icon-arrow-down"></i></el-button> -->
-             </el-form-item>
-           </el-form>
-           <div slot="footer" class="dialog-footer">
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
             <el-button class="quit" @click="workOrderShow = false">取 消</el-button>
-            <el-button class="confirm"  type="primary" @click="workOrderShow = false">确 定</el-button>
+            <el-button class="confirm" type="primary" @click="workOrderShow = false">确 定</el-button>
           </div>
-       </el-dialog>
+        </el-dialog>
         <!-- 表格 -->
-        <myTables @getCheckDetils='getCheckDetils' :orderList="orderList" :currentPage="currentPage" :titleName="titleName" />
+        <myTables
+          @getCheckDetils="getCheckDetils"
+          :orderList="orderList"
+          :currentPage="currentPage"
+          :titleName="titleName"
+        />
         <!-- 分页器 -->
         <myPagination
           :orderList="orderList"
@@ -72,7 +76,12 @@
         />
       </div>
       <!-- 查看详情 -->
-      <myCheck @changeVis='changeVis'  @rebuildChangeAddOrderShow='rebuildChangeAddOrderShow' :DetailsFrom ='DetailsFrom' :dialogVisible.sync='dialogVisible' />
+      <myCheck
+        @changeVis="changeVis"
+        @rebuildChangeAddOrderShow="rebuildChangeAddOrderShow"
+        :DetailsFrom="DetailsFrom"
+        :dialogVisible.sync="dialogVisible"
+      />
     </div>
   </div>
 </template>
@@ -89,11 +98,11 @@ export default {
   data() {
     return {
       //查看详情的数据
-      DetailsFrom:{}, 
-      detailsFromCheck:{},
+      DetailsFrom: {},
+      detailsFromCheck: {},
       orderList: [], //工单数据数组
       statesList: [], //状态数据
-      
+
       // 表格头部信息
       titleName: [
         { property: 'taskCode', label: '工单编号' },
@@ -108,7 +117,7 @@ export default {
       currentPage: 1, // 当前页码
       total: 20, // 总条数
       pageSize: 10, // 每页的数据条数
-      supplyValue:60,
+      supplyValue: 60,
       searchInfo: {
         order: '',
         value1: ''
@@ -117,11 +126,11 @@ export default {
       totalCount: '',
       totalPage: '',
       dialogFormVisible: false, //新建对话框的状态管理
-      dialogVisible:false,//详情显示隐藏属性
-      workOrderShow:false, //工单配置对话框显示隐藏属性
+      dialogVisible: false, //详情显示隐藏属性
+      workOrderShow: false, //工单配置对话框显示隐藏属性
       // 获取工单条件
       taskCode: '',
-      status: '',
+      status: ''
     }
   },
   created() {
@@ -155,35 +164,33 @@ export default {
     },
     // 下一页
     nxetPage() {
-      this.currentPage++,
-      this.getOperationList()
+      this.currentPage++, this.getOperationList()
     },
     // 查询
     searchBtn() {
-      this.taskCode = this.searchInfo.order,
-      this.status = this.searchInfo.value1
-      this.orderList =[]
+      ;(this.taskCode = this.searchInfo.order), (this.status = this.searchInfo.value1)
+      this.orderList = []
       this.getOperationList()
     },
     // 查看详情
-    async getCheckDetils(id){
-     try{
-        const {data}  = await getCheckDetails(id)
+    async getCheckDetils(id) {
+      try {
+        const { data } = await getCheckDetails(id)
         this.DetailsFrom = data
+        // console.log(data)
         this.dialogVisible = true
-     }catch (err) {
-       console.log(err);
-     }
+      } catch (err) {
+        console.log(err)
+      }
     },
     // 详情关闭
-    changeVis(){
+    changeVis() {
       this.dialogVisible = false
     },
-    addOrderShowClose(){
+    addOrderShowClose() {
       this.dialogFormVisible = false
-
     },
-    rebuildChangeAddOrderShow(){
+    rebuildChangeAddOrderShow() {
       this.dialogFormVisible = true
       this.detailsFromCheck = this.DetailsFrom
     }
@@ -269,35 +276,35 @@ export default {
 .el-form--inline .el-form-item__label {
   font-weight: 400;
 }
-.dialog-footer{
+.dialog-footer {
   margin-top: -40px;
   text-align: center;
 }
 
-  .quit{
-    width: 80px!important;
-    height: 36px;
-    padding: 0;
-    background-color: #fbf4f0!important;
-    border: none;
-    color: #655b56!important;
-  }
-  .confirm{
-    width: 80px!important;
-    height: 36px;
-    padding: 0;
-    background: linear-gradient(135deg,#ff9743,#ff5e20)!important;
-    border: none;
-  }
-/deep/.el-dialog1{
+.quit {
+  width: 80px !important;
+  height: 36px;
+  padding: 0;
+  background-color: #fbf4f0 !important;
+  border: none;
+  color: #655b56 !important;
+}
+.confirm {
+  width: 80px !important;
+  height: 36px;
+  padding: 0;
+  background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
+  border: none;
+}
+/deep/.el-dialog1 {
   border-radius: 10px !important;
 }
-.supplyValueBtn{
-     width: 39px;
-     height: 15px;
-     text-align: center;
-     border-radius: 0 4px 0 0;
-     border-bottom: 1px solid #d8dde3;
-     line-height: 17px;
+.supplyValueBtn {
+  width: 39px;
+  height: 15px;
+  text-align: center;
+  border-radius: 0 4px 0 0;
+  border-bottom: 1px solid #d8dde3;
+  line-height: 17px;
 }
 </style>
