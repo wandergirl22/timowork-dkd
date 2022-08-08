@@ -1,33 +1,20 @@
 <template>
- <div >
-   <h1>
-	 运维工单
-
-   </h1>
- </div>
+  <div>
+    <h1>设备状态</h1>
+  </div>
 </template>
 <script>
- export default {
-  name: 'operation',
-   props: {
-   },
-   data () {
-	 return {
-   }
-   },
-   created() {
-   },
-   methods: {
-   },
-   computed: {
-   },
-   watch: {
-   },
-   mounted() {
-   },
-   components: {
-   },
- }
+export default {
+  props: {},
+  data() {
+    return {}
+  },
+  created() {},
+  methods: {},
+  computed: {},
+  watch: {},
+  mounted() {},
+  components: {}
+}
 </script>
-<style scoped lang='less'>
-</style>
+<style scoped lang="less"></style>
