@@ -108,9 +108,7 @@
                 style="background: url(~@/assets/order/4.png)"
                 type="index"
               ></el-table-column>
-
               <el-table-column prop="skuName" width="120" class-name="name"></el-table-column>
-
               <el-table-column prop="count" class-name="count"></el-table-column>
             </el-table>
           </div>
