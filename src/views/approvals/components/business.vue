@@ -24,7 +24,7 @@
       <div class="results">
         <!-- 表格顶部 -->
         <el-row class="addBtn">
-          <el-col :span="2">
+          <el-col :span="1">
             <el-button
               @click="dialogFormVisible = true"
               class="primary"
@@ -34,7 +34,7 @@
               <slot>新建</slot>
             </el-button>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="1">
             <el-button class="secondery" @click="workOrderShow = true"><slot>工单配置</slot></el-button>
           </el-col>
         </el-row>
@@ -48,7 +48,15 @@
         <el-dialog title="提示" :visible.sync="workOrderShow" width="630px" custom-class="el-dialog1">
           <el-form>
             <el-form-item label="补给警戒线">
-              <el-input v-model="supplyValue" style="width: 400px"></el-input>
+              <el-input-number
+                v-model="supplyValue"
+                controls-position="right"
+                @change="handleChange"
+                :min="1"
+                :max="100"
+                style="width: 85%"
+              />
+              <!-- <el-input v-model="supplyValue" style="width: 400px"></el-input> -->
               <!-- <el-button class="supplyValueBtn"><i class="el-icon-arrow-up"></i></el-button>
                 <el-button class="supplyValueBtn"><i class="el-icon-arrow-down"></i></el-button> -->
             </el-form-item>
@@ -253,18 +261,20 @@ export default {
   padding: 20px 15px 19px 17px;
   background-color: #fff;
   .addBtn {
+    .el-col {
+      width: 80px;
+    }
     .primary {
       text-align: center;
       width: 80px !important;
       height: 36px;
       padding: 0;
-
       border: none;
       background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
     }
     .secondery {
       width: 80px !important;
-      margin-left: -10px;
+      margin-left: 10px;
       height: 36px;
       padding: 0;
       background-color: #fbf4f0 !important;

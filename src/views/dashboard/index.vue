@@ -95,21 +95,23 @@
           </div>
         </el-col>
         <!-- 中间和右边 -->
-        <el-col :span="6">
+        <el-col :span="6" class="aside">
           <div class="grid-content bg-purple" style="height: 538px; margin-top: -170px">
             <div class="title">
               商品热榜
               <span>{{ endatd }} ~ {{ statd }}</span>
             </div>
-            <el-table v-for="(item, index) in SkuTop" :key="index" :data="SkuTop" style="width: 100%">
+            <el-table style="width: 100%" :data="SkuTop">
+              <template v-for="(item, index) in SkuTop"></template>
               <el-table-column
                 prop="order"
-                width="50"
+                width="30"
                 style="background: url(~@/assets/order/4.png)"
                 type="index"
+                :key="index"
               ></el-table-column>
-              <el-table-column prop="skuName" width="120" class-name="name"></el-table-column>
-              <el-table-column prop="count" class-name="count"></el-table-column>
+              <el-table-column prop="skuName" width="130" class-name="name" :key="index"></el-table-column>
+              <el-table-column prop="count" class-name="count" :key="index"></el-table-column>
             </el-table>
           </div>
         </el-col>
@@ -288,7 +290,7 @@ export default {
           text: '销售额分布',
           left: 'center'
         },
-
+        grid: { top: '18%', left: '18%', right: '0%', bottom: '24%' },
         xAxis: {
           type: 'category',
           data: this.cylinderXAxis
@@ -326,7 +328,7 @@ export default {
           text: '销售额趋势图',
           left: 'center'
         },
-        grid: { top: '18%', left: '17%', right: '2%', bottom: '24%' },
+        grid: { top: '18%', left: '17%', right: '0%', bottom: '24%' },
         xAxis: {
           type: 'category',
           data: this.xAxis,
@@ -356,7 +358,7 @@ export default {
         title: {
           left: 'left'
         },
-        grid: { top: '10%', left: '22%', right: '2%', bottom: '24%' },
+
         tooltip: {
           trigger: 'item',
           formatter: '{b}<br/>总占比 : {c}% '
@@ -413,6 +415,7 @@ export default {
       margin-left: 2px;
       padding-left: 6px;
       text-align: center;
+      white-space: nowrap;
       font-size: 12px;
       font-family: zihun143-zhengkuchaojihei, zihun143;
       font-weight: 400;
@@ -485,14 +488,11 @@ export default {
 .empenty {
   width: 100%;
   height: 280px;
-  // background-color: red;
 }
 .cooperate {
   width: 100%;
   height: 280px;
-
   margin-top: 25px;
-  // background-color: red;
   display: flex;
   .pieChart {
     flex: 3;
@@ -637,7 +637,7 @@ export default {
 .grid-content {
   min-height: 36px;
   border-radius: 20px;
-  padding: 20px;
+  padding: 0 20px;
 }
 .row-bg {
   padding: 10px 0;
