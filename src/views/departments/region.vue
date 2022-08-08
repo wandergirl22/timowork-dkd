@@ -116,6 +116,7 @@ export default {
     },
     // 显示添加功能
     ShowAddRegion() {
+      this.$refs.dialogVue.formData = {}
       this.dialogVisible = true
     },
     // 显示修改功能
