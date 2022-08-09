@@ -124,7 +124,7 @@ export default {
       PartnerdialogVisible: false,
       PartnerdialogAddUpdate: false,
       PartnerInfo: {},
-      rowId: ''
+      rowId: 0
     }
   },
   methods: {
