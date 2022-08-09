@@ -22,9 +22,14 @@
         icon="el-icon-circle-plus-outline"
         backgroundColor="#ff712c"
         @click="ShowAddPartner"
+        style="margin-bottom: 15px"
       ></zzl-Button>
       <!-- table表格 -->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        :header-cell-style="{ background: 'rgb(243, 246, 251)', color: 'rgb(102, 102, 102)' }"
+      >
         <el-table-column label="序号" width="70">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 + 10 * (tableInfo.pageIndex - 1) }}</span>
