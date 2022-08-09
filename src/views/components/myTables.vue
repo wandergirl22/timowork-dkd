@@ -48,7 +48,6 @@ export default {
       return index + 1
     },
     handleClick(row) {
-      console.log(1);
       this.$emit('getCheckDetils',row.taskId)
       }
   },

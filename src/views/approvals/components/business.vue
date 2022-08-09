@@ -35,7 +35,7 @@
             </el-button>
           </el-col>
           <el-col :span="1">
-            <el-button class="secondery" @click="workOrderShow = true"><slot>工单配置</slot></el-button>
+            <el-button class="secondery" @click="workOrderClickShowFn"><slot>工单配置</slot></el-button>
           </el-col>
         </el-row>
         <!-- 新增工单dialog-->
@@ -43,7 +43,8 @@
           :detailsFromCheck="detailsFromCheck"
           :dialogFormVisible="dialogFormVisible"
           @addOrderShowClose="addOrderShowClose"
-        />
+          :type="type"
+        ></myAddOrder>
         <!-- 工单配置dialog -->
         <el-dialog title="提示" :visible.sync="workOrderShow" width="630px" custom-class="el-dialog1">
           <el-form>
@@ -52,13 +53,10 @@
                 v-model="supplyValue"
                 controls-position="right"
                 @change="handleChange"
-                :min="1"
+                :min="0"
                 :max="100"
                 style="width: 85%"
               />
-              <!-- <el-input v-model="supplyValue" style="width: 400px"></el-input> -->
-              <!-- <el-button class="supplyValueBtn"><i class="el-icon-arrow-up"></i></el-button>
-                <el-button class="supplyValueBtn"><i class="el-icon-arrow-down"></i></el-button> -->
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -89,12 +87,14 @@
         @rebuildChangeAddOrderShow="rebuildChangeAddOrderShow"
         :DetailsFrom="DetailsFrom"
         :dialogVisible.sync="dialogVisible"
+        :type="type"
       />
     </div>
   </div>
 </template>
 <script>
 import { getOperationList, getOperationStatesList, getCheckDetails } from '@/api/table.js'
+import { getAlertValue, setAlertValue } from '@/api/replenish'
 import myTables from '@/views/components/myTables'
 import myPagination from '@/views/components/myPagination'
 import myButton from '@/views/components/myButton'
@@ -125,7 +125,7 @@ export default {
       currentPage: 1, // 当前页码
       total: 20, // 总条数
       pageSize: 10, // 每页的数据条数
-      supplyValue: 60,
+      supplyValue: 60, //工单预警值
       searchInfo: {
         order: '',
         value1: ''
@@ -136,13 +136,15 @@ export default {
       dialogFormVisible: false, //新建对话框的状态管理
       dialogVisible: false, //详情显示隐藏属性
       workOrderShow: false, //工单配置对话框显示隐藏属性
+      dialogListVisible: false, //补货清单显示隐藏属性
       // 获取工单条件
       taskCode: '',
-      status: ''
+      status: '',
+      type: 2 //工单类型
     }
   },
   created() {
-    this.getOperationList(), this.getOperationStatesList()
+    this.getOperationList(), this.getOperationStatesList(), this.getCheckDetils()
   },
   methods: {
     async getOperationList() {
@@ -185,7 +187,7 @@ export default {
       try {
         const { data } = await getCheckDetails(id)
         this.DetailsFrom = data
-        // console.log(data)
+        console.log(data)
         this.dialogVisible = true
       } catch (err) {
         console.log(err)
@@ -201,6 +203,18 @@ export default {
     rebuildChangeAddOrderShow() {
       this.dialogFormVisible = true
       this.detailsFromCheck = this.DetailsFrom
+    },
+    handleChange() {},
+    // 获取预警值
+    async workOrderClickShowFn() {
+      this.workOrderShow = true
+      const { data } = await getAlertValue()
+      this.supplyValue = data
+    },
+    // 设置预警值
+    async setAlertValue() {
+      const res = await setAlertValue()
+      console.log(res)
     }
   },
   watch: {

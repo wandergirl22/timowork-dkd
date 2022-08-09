@@ -96,22 +96,21 @@
         </el-col>
         <!-- 中间和右边 -->
         <el-col :span="6" class="aside">
-          <div class="grid-content bg-purple" style="height: 538px; margin-top: -170px">
+          <div class="grid-content bg-purple" style="height: 560px; margin-top: -180px">
             <div class="title">
               商品热榜
               <span>{{ endatd }} ~ {{ statd }}</span>
             </div>
             <el-table style="width: 100%" :data="SkuTop">
-              <template v-for="(item, index) in SkuTop"></template>
+              <template v-for="item in SkuTop"></template>
               <el-table-column
                 prop="order"
                 width="30"
                 style="background: url(~@/assets/order/4.png)"
                 type="index"
-                :key="index"
               ></el-table-column>
-              <el-table-column prop="skuName" width="130" class-name="name" :key="index"></el-table-column>
-              <el-table-column prop="count" class-name="count" :key="index"></el-table-column>
+              <el-table-column prop="skuName" width="130" class-name="name"></el-table-column>
+              <el-table-column prop="count" class-name="count"></el-table-column>
             </el-table>
           </div>
         </el-col>
@@ -247,12 +246,14 @@ export default {
     async getnodeCollect() {
       const res = await getnodeCollect()
       this.nodeCollect = res.data
+      console.log(res.data)
       this.myPieChart()
     },
     // top排行
     async getSkuTop() {
       const res = await getSkuTop(10, this.endatd, this.statd)
       this.SkuTop = res.data
+      // console.log(this.SkuTop)
     },
     // 获取工单数量
     async getUserWorks() {
@@ -290,7 +291,7 @@ export default {
           text: '销售额分布',
           left: 'center'
         },
-        grid: { top: '18%', left: '18%', right: '0%', bottom: '24%' },
+        grid: { top: '18%', left: '19%', right: '0%', bottom: '24%' },
         xAxis: {
           type: 'category',
           data: this.cylinderXAxis
@@ -361,7 +362,7 @@ export default {
 
         tooltip: {
           trigger: 'item',
-          formatter: '{b}<br/>总占比 : {c}% '
+          formatter: '{b}<br/>总占比 : {d}% '
         },
         toolbox: {
           show: true,
@@ -410,7 +411,7 @@ export default {
     .cell {
       display: inline-block;
       text-align: center;
-      width: 21px;
+      width: 22px;
       height: 20px;
       margin-left: 2px;
       padding-left: 6px;
@@ -539,6 +540,9 @@ export default {
   font-family: PingFangSC-Semibold, PingFang SC;
   font-weight: 600;
   color: #333;
+  padding-top: 17px;
+  padding-bottom: -4px;
+
   span {
     margin-left: 10px;
     font-size: 12px;
