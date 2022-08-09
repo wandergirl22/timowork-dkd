@@ -21,6 +21,12 @@ import 'echarts'
 import Echarts from 'vue-echarts'
 import dayjs from 'dayjs'
 
+import JSEncrypt from "jsencrypt"; //引入模块
+Vue.prototype.$jsEncrypt = JSEncrypt; //配置全局变量
+import md5 from 'js-md5' //引入
+Vue.prototype.$md5 = md5;//添加
+
+
 // 注册自定义组件
 import zzlUI from '@/components/index'
 Vue.use(zzlUI)

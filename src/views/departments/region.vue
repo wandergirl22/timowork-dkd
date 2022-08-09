@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-card>
-      <zzl-Input title="区域搜索：" v-model="value"></zzl-Input>
+      <zzl-Input
+        title="区域搜索："
+        v-model="value"
+        placeholder="请输入"
+        @keyup.delete.native="keyUpDel"
+      ></zzl-Input>
       <zzl-Button title="查询" icon="el-icon-search" backgroundColor="#5f84ff" @click="search"></zzl-Button>
     </el-card>
     <el-card>
@@ -10,10 +15,15 @@
         icon="el-icon-circle-plus-outline"
         backgroundColor="#ff712c"
         @click="ShowAddRegion"
+        style="margin-bottom: 15px"
       ></zzl-Button>
 
       <!-- table表格 -->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        :header-cell-style="{ background: 'rgb(243, 246, 251)', color: 'rgb(102, 102, 102)' }"
+      >
         <el-table-column label="序号" width="70">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 + 10 * (tableInfo.pageIndex - 1) }}</span>
@@ -36,9 +46,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="color: #5f84ff">
-              查看详情
-            </el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)" style="color: #5f84ff">查看详情</el-button>
             <el-button size="mini" style="color: #5f84ff" @click="ShowEditRegion(scope.row)">修改</el-button>
             <el-button size="mini" @click="delTableList(scope.row)" style="color: red">删除</el-button>
           </template>
@@ -54,13 +62,21 @@
         :total="tableInfo.totalCount"
       ></el-pagination>
     </el-card>
-    <!-- 弹层 -->
+    <!-- 新增和修改弹层 -->
     <Dialog :visiable.sync="dialogVisible" :rowId="rowId" ref="dialogVue"></Dialog>
+    <!-- 查看详情弹层 -->
+    <DialogInfo
+      :dialogVisibleInfo="dialogVisibleInfo"
+      :regionName="regionName"
+      :regionData="regionData"
+    ></DialogInfo>
   </div>
 </template>
 <script>
-import { getregionListApi, delregionApi } from '@/api/region'
+import { getregionListApi, delregionApi, regionInfoApi, NodeSearchApi } from '@/api/region'
 import Dialog from './components/dialog.vue'
+import DialogInfo from './components/dialogInfo.vue'
+
 export default {
   name: 'region',
   props: {},
@@ -76,7 +92,10 @@ export default {
       taskCode: '',
       value: '',
       dialogVisible: false,
-      rowId: ''
+      dialogVisibleInfo: false,
+      rowId: '',
+      regionName: '',
+      regionData: []
     }
   },
   created() {},
@@ -85,8 +104,21 @@ export default {
     search() {
       this.gettableData(this.tableInfo.pageIndex)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
+    keyUpDel() {
+      if (this.value.length === 0) {
+        this.gettableData(this.tableInfo.pageIndex)
+      }
+    },
+
+    // 查看详情
+    async handleEdit(row) {
+      const {
+        data: { currentPageRecords }
+      } = await NodeSearchApi({ regionId: row.id })
+
+      this.regionData = currentPageRecords
+      this.regionName = row.name
+      this.dialogVisibleInfo = true
     },
     // 渲染列表
     async gettableData(pageIndex) {
@@ -132,8 +164,14 @@ export default {
   watch: {},
   mounted() {
     this.gettableData(this.tableInfo.pageIndex)
+
+    // let pwd = '123456' //假设为密码
+    // let newpwd = this.$md5(pwd) //加密
+    // console.log(newpwd, '密码') //查看加密后的密码
+    // const jse = new this.$jsEncrypt() // 实例化一个 jsEncrypt 对象
+    // console.log(jse(encrypt(123456)), '密码')
   },
-  components: { Dialog }
+  components: { Dialog, DialogInfo }
 }
 </script>
 <style scoped lang="scss">
