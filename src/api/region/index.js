@@ -145,3 +145,37 @@ export const partnerInfoApi = (data) => {
        params:data
   })
 }
+/**
+ * 重置合作商密码
+ * @returns Promise对象
+ */
+export const partnerResetPwdApi = (id) => {
+  return request({
+    method: 'PUT',
+        url: `/user-service/partner/resetPwd/${id}`,
+    
+  })
+}
+/**
+ * 新增合作商
+ * @returns Promise对象
+ */
+export const AddDpartnerApi = (data) => {
+  return request({
+    method: 'POST',
+        url: '/user-service/partner',
+       data
+  })
+}
+
+/**
+ * 删除合作商
+ * @returns Promise对象
+ */
+export const editDpartApi = (id,data) => {
+  return request({
+    method: 'PUT',
+        url: `/user-service/partner/${id}`,
+       data
+  })
+}
