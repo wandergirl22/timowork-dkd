@@ -2,7 +2,7 @@
    
   <div>
        
-    <el-dialog title="新增区域" :visible="ChangedialogVisible" width="50%" :before-close="handleClose">
+    <el-dialog :title="title" :visible="ChangedialogVisible" width="50%" :before-close="handleClose">
          
       <el-form ref="form" :rules="formRules" label-width="100px" :model="formData">
                
@@ -14,58 +14,39 @@
                      
         <el-form-item label="所在区域">
                    
-
-          <el-autocomplete
-            style="width: 100%"
-            popper-class="my-autocomplete"
-            v-model="Area"
-            :fetch-suggestions="querySearchArea"
-            placeholder="请选择"
-            @select="handleSelectArea"
-          >
-            <template slot-scope="{ item }">
-              <div>{{ item }}</div>
-            </template>
-          </el-autocomplete>
+          <el-select v-model="formData.regionId" placeholder="请选择" style="width: 100%">
+            <el-option
+              v-for="item in optionsChild"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            ></el-option>
+          </el-select>
                  
         </el-form-item>
         <el-form-item label="所属商圈">
-                   
-          <el-autocomplete
-            style="width: 100%"
-            popper-class="my-autocomplete"
-            v-model="Business"
-            :fetch-suggestions="querySearchBusiness"
-            placeholder="请选择"
-            @select="handleSelectBusiness"
-          >
-            <template slot-scope="{ item }">
-              <div>{{ item.name }}</div>
-            </template>
-          </el-autocomplete>
-                 
+                             
+          <el-select v-model="formData.businessId" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in BusinessList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="归属合作商">
-                   
-          <el-autocomplete
-            style="width: 100%"
-            popper-class="my-autocomplete"
-            v-model="partner"
-            :fetch-suggestions="querySearchpartner"
-            placeholder="请选择"
-            @select="handleSelectpartner"
-          >
-            <template slot-scope="{ item }">
-              <div>{{ item }}</div>
-            </template>
-          </el-autocomplete>
-                         
+                 
+          <el-select v-model="formData.ownerId" placeholder="请选择" style="width: 100%">
+            <el-option
+              v-for="item in partnerList"
+              :key="item.ownerId"
+              :label="item.ownerName"
+              :value="item.ownerId"
+            ></el-option>
+          </el-select>
+                           
         </el-form-item>
-        <el-form-item label="详细地址" prop="addr">
+        <el-form-item label="详细地址">
                    
           <el-cascader
             placeholder="请选择"
-            v-model="formData.addr"
+            v-model="selectedOptions"
             :options="options"
             @change="handleChange"
             style="width: 100%"
@@ -78,7 +59,7 @@
             placeholder="输入备注"
             type="textarea"
             style="height: 100px"
-            v-model="formData.textarea"
+            v-model="formData.addr"
           ></el-input>
                  
         </el-form-item>
@@ -98,7 +79,8 @@
 </template>
 
 <script>
-import { addregionApi, editregionApi, businessListApi } from '@/api/region'
+import { regionDataPlus } from 'element-china-area-data'
+import { AddNodeApi, editNodeApi, businessListApi } from '@/api/region'
 
 export default {
   name: 'dialogVue',
@@ -109,7 +91,7 @@ export default {
     rowId: {
       type: String
     },
-    regionSelect: {
+    optionsChild: {
       type: Array
     },
     partnerList: {
@@ -122,47 +104,22 @@ export default {
       formData: {
         name: '',
         addr: '',
-        textarea: ''
+        areaCode: '',
+        regionId: '',
+        businessId: '',
+        ownerId: '',
+        ownerName: ''
       },
-      id: '',
+
       formRules: {
         name: [{ required: true, message: '请输入', trigger: 'blur' }],
         addr: [{ required: true, message: '请输入', trigger: 'blur' }]
       },
-      Area: '',
+
       partner: '',
-      Business: '',
       BusinessList: [],
-      options: [
-        {
-          value: 'zhinan',
-          label: '指南',
-          children: [
-            {
-              value: 'shejiyuanze',
-              label: '设计原则',
-              children: [
-                {
-                  value: 'yizhi',
-                  label: '一致'
-                },
-                {
-                  value: 'fankui',
-                  label: '反馈'
-                },
-                {
-                  value: 'xiaolv',
-                  label: '效率'
-                },
-                {
-                  value: 'kekong',
-                  label: '可控'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      options: regionDataPlus,
+      selectedOptions: []
     }
   },
   methods: {
@@ -173,15 +130,37 @@ export default {
       console.log(this.BusinessList, 'getBusiness')
     },
 
+    // 添加和修改
     async onSave() {
       await this.$refs.form.validate()
+      const find = this.partnerList.find((item) => {
+        return this.formData.ownerId === item.ownerId
+      })
 
       try {
         if (this.rowId) {
-          await editregionApi(this.rowId, this.formData)
+          await editNodeApi(this.rowId, {
+            name: this.formData.name,
+            addr: this.formData.addr,
+            areaCode: this.formData.areaCode,
+            createUserId: 1,
+            regionId: this.formData.regionId,
+            businessId: this.formData.businessId,
+            ownerId: this.formData.ownerId,
+            ownerName: find.ownerName
+          })
           this.$message.success('编辑成功')
         } else {
-          await addregionApi(this.formData)
+          await AddNodeApi({
+            name: this.formData.name,
+            addr: this.formData.addr,
+            areaCode: this.formData.areaCode,
+            createUserId: 1,
+            regionId: this.formData.regionId,
+            businessId: this.formData.businessId,
+            ownerId: this.formData.ownerId,
+            ownerName: find.ownerName
+          })
           this.$message.success('添加成功')
         }
       } catch (error) {
@@ -199,65 +178,17 @@ export default {
       this.$emit('updated:visible', false)
     },
 
-    //所在区域选择功能
-    querySearchArea(queryString, cb) {
-      var regionSelect = this.regionSelect
-      var results = queryString ? regionSelect.filter(this.createFilter(queryString)) : regionSelect
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter(queryString) {
-      return (regionSelect) => {
-        return regionSelect.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
-    },
-
-    handleSelectArea(item) {
-      this.Area = item
-    },
-    //所在商圈的选择功能
-    querySearchBusiness(queryString, cb) {
-      var BusinessList = this.BusinessList
-      var results = queryString ? BusinessList.filter(this.createFilter(queryString)) : BusinessList
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter(queryString) {
-      return (BusinessList) => {
-        return BusinessList.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
-    },
-
-    handleSelectBusiness(item) {
-      this.Business = item.name
-    },
-    //归属合作商的选择功能
-    querySearchpartner(queryString, cb) {
-      var partnerListArray = this.partnerListArray
-      var results = queryString ? partnerListArray.filter(this.createFilter(queryString)) : partnerListArray
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter(queryString) {
-      return (partnerListArray) => {
-        return partnerListArray.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
-    },
-
-    handleSelectpartner(item) {
-      this.partner = item
-    },
     // 联级菜单
     handleChange(value) {
-      console.log(value)
+      this.areaCode = value[2]
     }
   },
   mounted() {
     this.getBusiness()
   },
   computed: {
-    partnerListArray() {
-      return [...new Set(this.partnerList)]
+    title() {
+      return this.rowId.length > 0 ? '修改区域' : '新增区域'
     }
   },
   watch: {},

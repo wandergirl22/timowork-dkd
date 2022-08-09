@@ -68,7 +68,7 @@
   </div>
 </template>
 <script>
-import { getregionListApi, delregionApi, NodeListApi } from '@/api/region'
+import { getregionListApi, delregionApi, regionInfoApi, NodeSearchApi } from '@/api/region'
 import Dialog from './components/dialog.vue'
 import DialogInfo from './components/dialogInfo.vue'
 
@@ -107,16 +107,13 @@ export default {
 
     // 查看详情
     async handleEdit(row) {
-      this.dialogVisibleInfo = true
-      const { data } = await NodeListApi({
-        pageIndex: this.tableInfo.pageIndex,
-        pageSize: 10,
-        name: row.name,
-        regionId: row.id
-      })
-      this.regionData = data.currentPageRecords
-      console.log(this.regionData, '222')
+      const {
+        data: { currentPageRecords }
+      } = await NodeSearchApi({ regionId: row.id })
+
+      this.regionData = currentPageRecords
       this.regionName = row.name
+      this.dialogVisibleInfo = true
     },
     // 渲染列表
     async gettableData(pageIndex) {
@@ -162,6 +159,12 @@ export default {
   watch: {},
   mounted() {
     this.gettableData(this.tableInfo.pageIndex)
+
+    // let pwd = '123456' //假设为密码
+    // let newpwd = this.$md5(pwd) //加密
+    // console.log(newpwd, '密码') //查看加密后的密码
+    // const jse = new this.$jsEncrypt() // 实例化一个 jsEncrypt 对象
+    // console.log(jse(encrypt(123456)), '密码')
   },
   components: { Dialog, DialogInfo }
 }

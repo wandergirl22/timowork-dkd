@@ -8,8 +8,8 @@
         @keyup.delete.native="keyUpDel"
       ></zzl-Input>
       <span>区域搜索：</span>
-      <el-select v-model="Areavalue" placeholder="请选择">
-        <el-option v-for="(item, index) in options" :key="index" :label="item" :value="item"></el-option>
+      <el-select v-model="Areavalue" placeholder="请选择" clearable>
+        <el-option v-for="item in Fatheroptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <zzl-Button
         title="查询"
@@ -61,9 +61,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="color: #5f84ff">
-              查看详情
-            </el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)" style="color: #5f84ff">查看详情</el-button>
             <el-button size="mini" style="color: #5f84ff" @click="ShowEditRegion(scope.row)">修改</el-button>
             <el-button size="mini" @click="delTableList(scope.row)" style="color: red">删除</el-button>
           </template>
@@ -84,14 +82,16 @@
       :ChangedialogVisible.sync="ChangedialogVisible"
       :rowId="rowId"
       :partnerList="partnerList"
-      :regionSelect="regionSelect"
+      :optionsChild="Fatheroptions"
       ref="changePoint"
     ></changePointdialogVue>
+    <ChangePointInfo :ChangedialogVisibleInfo="ChangedialogVisibleInfo" :NodeData="NodeData"></ChangePointInfo>
   </div>
 </template>
 <script>
-import { NodeListApi } from '@/api/region'
+import { NodeListApi, delNodeApi, NodeInfoApi } from '@/api/region'
 import changePointdialogVue from './components/changePointdialog.vue'
+import ChangePointInfo from './components/changePointInfo.vue'
 export default {
   name: 'region',
   props: {},
@@ -107,11 +107,12 @@ export default {
       taskCode: '',
       value: '',
       Areavalue: '',
-      options: [],
+      Fatheroptions: [],
       partnerList: [],
       ChangedialogVisible: false,
+      ChangedialogVisibleInfo: false,
       rowId: '',
-      regionSelect: []
+      NodeData: []
     }
   },
   created() {},
@@ -119,25 +120,72 @@ export default {
     // 渲染input
     async inputFn() {
       const { data } = await NodeListApi({ pageSize: 1000, name: this.value })
-      this.options = [...new Set(data.currentPageRecords.map((item) => item.region.name))]
+      const map = new Map()
+      this.Fatheroptions = data.currentPageRecords
+        .map((item) => {
+          return {
+            value: item.region.name,
+            label: item.region.name,
+            key: item.region.id
+          }
+        })
+        .filter((key) => !map.has(key.value) && map.set(key.value, 1))
+
+      return this.Fatheroptions
     },
     // 搜索
-    search() {},
+    async search() {
+      this.gettableData()
+    },
     keyUpDel() {
       if (this.value.length === 0) {
         this.gettableData(this.tableInfo.pageIndex)
       }
     },
-    handleEdit(index, row) {
-      console.log(index, row)
+    async handleEdit(row) {
+      const { data } = await NodeInfoApi(row.id)
+      function vmStatus(vmStatus) {
+        if (vmStatus === 0) {
+          return '未投放'
+        } else if (vmStatus === 1) {
+          return '运营'
+        } else {
+          return '撤机'
+        }
+      }
+      this.NodeData = data.map((val) => {
+        return {
+          innerCode: val.innerCode,
+          vmStatus: vmStatus(val.vmStatus),
+          lastSupplyTime: val.createTime.replace('T', ' ').replaceAll('-', '.')
+        }
+      })
+
+      this.ChangedialogVisibleInfo = true
     },
     // 渲染列表
     async gettableData(pageIndex, pageSize) {
-      const { data } = await NodeListApi({ pageIndex: pageIndex, pageSize: pageSize, name: this.value })
+      const { data } = await NodeListApi({
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        name: this.value,
+        regionId: this.Areavalue
+      })
 
-      this.partnerList = data.currentPageRecords.map((val) => val.ownerName)
-      this.regionSelect = data.currentPageRecords.map((val) => val.region.name)
+      const map = new Map()
+      this.partnerList = data.currentPageRecords
+        .map((val) => {
+          return {
+            ownerName: val.ownerName,
+            ownerId: val.ownerId
+          }
+        })
+        .filter((ownerId) => !map.has(ownerId.ownerName) && map.set(ownerId.ownerName, 1))
+
+      console.log(this.partnerList, 'partnerList')
+
       this.tableData = data.currentPageRecords
+      console.log(this.tableData, 'tableData')
 
       this.tableInfo.totalCount = parseInt(data.totalCount)
       this.tableInfo.pageSize = parseInt(data.pageSize)
@@ -153,7 +201,7 @@ export default {
     // 删除功能
     async delTableList(row) {
       try {
-        await delregionApi(row.id)
+        await delNodeApi(row.id)
         this.gettableData(this.tableInfo.pageIndex)
         this.$message.success('删除成功')
       } catch (error) {
@@ -163,13 +211,14 @@ export default {
     // 显示添加功能
     ShowAddRegion() {
       this.ChangedialogVisible = true
+      this.$refs.changePoint.formData = {}
     },
     // 显示修改功能
     ShowEditRegion(row) {
       console.log(row)
       this.rowId = row.id
-      // this.$refs.dialogVue.formData.regionName = row.name
-      // this.$refs.dialogVue.formData.remark = row.remark
+      this.$refs.changePoint.formData = row
+
       this.ChangedialogVisible = true
     }
   },
@@ -184,7 +233,7 @@ export default {
       return val.substring(val.lastIndexOf('-') + 1)
     }
   },
-  components: { changePointdialogVue }
+  components: { changePointdialogVue, ChangePointInfo }
 }
 </script>
 <style scoped lang="scss">

@@ -37,13 +37,25 @@ export const addregionApi = (data) => {
  * 区域详情
  * @returns Promise对象
  */
-export const regionInfoApi = (id,data) => {
+export const regionInfoApi = (regionId) => {
   return request({
-    method: 'get',
-      url: `/vm-service/region/${id}`,
-      params:data
+    method: 'GET',
+      url: `/vm-service/region/${regionId}`
   })
 }
+/**
+ * 点位搜索
+ * @returns Promise对象
+ */
+export const NodeSearchApi = (data) => {
+  return request({
+    method: 'GET',
+        url: '/vm-service/node/search',
+      params: data
+  })
+}
+
+
 /**
  * 修改区域
  * @returns Promise对象
@@ -100,7 +112,27 @@ export const AddNodeApi = (data) => {
     data
   })
 }
-
+/**
+ * 修改点位
+ * @returns Promise对象
+ */
+export const editNodeApi = (id,data) => {
+  return request({
+    method: 'PUT',
+     url: `/vm-service/node/${id}`,
+    data
+  })
+}
+/**
+ * 删除点位
+ * @returns Promise对象
+ */
+export const delNodeApi = (id) => {
+  return request({
+    method: 'DELETE',
+     url: `/vm-service/node/${id}`,
+  })
+}
 
 /**
  * 合作商搜索

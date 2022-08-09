@@ -160,7 +160,7 @@ export default {
     btnLogin() {
       // 登录接口所需的载荷
       const loginInfo = {
-        ...this.$md5(this.loginForm),
+        ...this.loginForm,
         loginType: 0,
         clientToken: this.checkNumber
       }
