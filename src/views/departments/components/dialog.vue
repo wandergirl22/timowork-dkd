@@ -1,8 +1,5 @@
 <template>
   <div>
-<<<<<<< HEAD
-    <el-dialog :title="title" :visible="visiable" width="50%" :before-close="handleClose">
-=======
     <el-dialog title="新增区域" :visible="visiable" width="50%" :before-close="handleClose">
 >>>>>>> feature/approvals
       <el-form ref="form" :model="formData" :rules="formRules" label-width="100px">
