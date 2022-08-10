@@ -54,6 +54,7 @@ export default {
     //   console.log(index, row)
     // },
     handleDelete(index, row) {
+      this.$message.error('不支持此操作')
       console.log(index, row)
     },
     // 设备状态

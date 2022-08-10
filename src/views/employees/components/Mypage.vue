@@ -1,5 +1,5 @@
 <template>
-  <div class="block1" v-show="true">
+  <div class="block1" v-show="MyPage.totalCount <= 10 ? false : true">
     <div class="total">
       <span>共{{ MyPage.totalCount }}条记录，第{{ MyPage.pageIndex }}/{{ MyPage.totalPage }}页</span>
     </div>
@@ -14,7 +14,7 @@
 export default {
   data() {
     return {
-      isShow: true,
+      isShow: true
     }
   },
   props: {
