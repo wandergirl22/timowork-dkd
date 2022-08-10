@@ -24,16 +24,18 @@
       </div>
       <!-- 表格 -->
       <el-table :data="orderList.slice((currentPage - 1) * pageSize, currentPage * pageSize)">
-        <el-table-column label="序号" type="index" :index="hIndex" width="70"></el-table-column>
-
-        <el-table-column property="orderNo" label="订单编号" width="220"></el-table-column>
-        <el-table-column property="skuName" label="商品名称" width="150"></el-table-column>
-        <el-table-column property="price" label="订单金额（元）" width="150"></el-table-column>
-        <el-table-column property="innerCode" label="设备编号" width="170"></el-table-column>
-        <el-table-column property="payStatus" label="订单状态" width="150"></el-table-column>
-        <el-table-column property="createTime" label="订单日期" width="170"></el-table-column>
+        <el-table-column type="index" :index="hIndex" label="序号"></el-table-column>
+        <el-table-column property="orderNo" label="订单编号"></el-table-column>
+        <el-table-column property="skuName" label="商品名称"></el-table-column>
+        <el-table-column :formatter="formatterPrice" label="订单金额（元）"></el-table-column>
+        <el-table-column property="innerCode" label="设备编号"></el-table-column>
+        <el-table-column :formatter="formatterStatus" label="订单状态"></el-table-column>
+        <el-table-column :formatter="formatterDate" label="订单日期"></el-table-column>
         <el-table-column label="操作" width="70">
-          <el-button @click="" type="text" size="small">查看详情</el-button>
+          <el-button @click="" type="text" size="small">
+            查看详情
+            <!-- <myCheck/> -->
+          </el-button>
         </el-table-column>
       </el-table>
       <!-- 分页器 -->
@@ -50,7 +52,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="orderList.length"
         ></el-pagination>
-        <div>
+        <div class="page">
           <el-button @click="previousPage">上一页</el-button>
           <el-button @click="nxetPage">下一页</el-button>
         </div>
@@ -123,6 +125,21 @@ export default {
       const { data } = await getOrderList(obj)
       this.orderList = data.currentPageRecords
       console.log(res)
+    },
+    // 处理金额
+    formatterPrice(row, column) {
+      return row.price / 100
+    },
+    // 处理状态
+    formatterStatus(row, column) {
+      return row.payStatus ? '出货成功' : '未支付'
+    },
+    // 处理日期
+    formatterDate(row, column) {
+      // const newDate = new Date('yyyy-MM-dd HH:mm:ss')
+      // const oldDate = Date.parse(row.createTime)
+      // return newDate.format(oldDate)
+      return row.createTime.split('T').join(' ')
     }
   }
 }
@@ -130,11 +147,11 @@ export default {
 
 <style scoped lang="less">
 .block1 {
+  width: 99%;
   display: flex;
   justify-content: space-between;
   background: #fff;
   padding: 32px 16px;
-  width: 1150px;
   .total {
     display: inline-block;
     font-size: 15px;
@@ -153,7 +170,7 @@ export default {
   margin-top: 15px;
 }
 .search {
-  width: 100%;
+  width: 99%;
   height: 64px;
   background-color: #fff !important;
   display: flex;
@@ -191,5 +208,32 @@ export default {
       border: none;
     }
   }
+}
+
+.el-table {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 99%;
+  max-width: 100%;
+  background-color: #fff;
+  font-size: 14px;
+  color: #606266;
+  text-align: left;
+}
+th {
+  line-height: 1.15;
+  padding: 10px 0px 9px;
+  background: rgb(243, 246, 251);
+  font-weight: 500;
+}
+td {
+  height: 44px;
+  padding: 2px 0px;
 }
 </style>

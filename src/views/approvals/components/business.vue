@@ -52,10 +52,10 @@
               <el-input-number
                 v-model="supplyValue"
                 controls-position="right"
-                @change="handleChange"
                 :min="0"
                 :max="100"
                 style="width: 85%"
+                @change="setAlertValue(supplyValue)"
               />
             </el-form-item>
           </el-form>
@@ -125,7 +125,7 @@ export default {
       currentPage: 1, // 当前页码
       total: 20, // 总条数
       pageSize: 10, // 每页的数据条数
-      supplyValue: 60, //工单预警值
+      supplyValue: 1, //工单预警值
       searchInfo: {
         order: '',
         value1: ''
@@ -212,10 +212,10 @@ export default {
       this.supplyValue = data
     },
     // 设置预警值
-    async setAlertValue() {
-      const res = await setAlertValue()
+    async setAlertValue(val) {
+      const res = await setAlertValue(val)
       console.log(res)
-    }
+    },
   },
   watch: {
     orderList() {

@@ -23,13 +23,24 @@ export function getAlertValue() {
 
 /**
  * 设置自动补货工单阈值
- * @param {Number} per 预警值(百分比)
+ * @param {Number} data 预警值(百分比)
  * @returns Promise对象
  */
-export function setAlertValue(per) {
+export function setAlertValue(data) {
   return request({
     url: '/task-service/task/autoSupplyConfig',
     method: 'post',
-    data: per
+    data
+  })
+}
+
+/**
+ * 获取售货机货道详情
+ * @param {*} innerCode 售货机编号
+ * @returns Promise对象
+ */
+export function getSellDetails(innerCode) {
+  return request({
+    url: '/vm-service/channel/channelList/' + innerCode
   })
 }

@@ -65,7 +65,7 @@
         @rebuildChangeAddOrderShow="rebuildChangeAddOrderShow"
         :DetailsFrom="DetailsFrom"
         :dialogVisible.sync="dialogVisible"
-        :type ='type'
+        :type="type"
       />
     </div>
   </div>

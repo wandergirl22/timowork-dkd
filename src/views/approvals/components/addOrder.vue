@@ -12,6 +12,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="工单类型:" :label-width="formLabelWidth">
+        <!-- v-if="item.type === this.type" -->
         <el-select
           style="width: 500px"
           v-model="detailsFromCheck.orderStatus"
@@ -28,23 +29,17 @@
       </el-form-item>
       <el-form-item label="补货数量:" :label-width="formLabelWidth" v-if="this.type === 2">
         <div>
-          <el-button type="text" icon="el-icon-tickets" @click="dialogListVisible = true">
+          <el-button type="text" icon="el-icon-tickets" @click="showdialogList(detailsFromCheck.innerCode)">
             补货清单
             <el-dialog title="补货清单" :visible.sync="dialogListVisible" width="40%" :append-to-body="true">
-              <el-table data="[]" style="width: 100%">
-                <el-table-column label="货道编号" prop="channelCode"></el-table-column>
-                <el-table-column label="商品名称" prop="skuName"></el-table-column>
-                <el-table-column label="当前数量" prop="date"></el-table-column>
-                <el-table-column label="还可添加" prop="expectCapacity"></el-table-column>
-                <el-table-column align="right" label="补满数量">
+              <el-table :data="replenishment" style="width: 100%" max-height="500">
+                <el-table-column label="货道编号" prop="channelCode" width="100px"></el-table-column>
+                <el-table-column label="商品名称" prop="sku.brandName" width="180px"></el-table-column>
+                <el-table-column label="当前数量" prop="currentCapacity" width="100px"></el-table-column>
+                <el-table-column label="还可添加" :formatter="formatter" width="100px"></el-table-column>
+                <el-table-column align="right" label="补满数量" prop="maxCapacity">
                   <template slot-scope="scope">
-                    <el-input-number
-                      v-model="supplyValue"
-                      controls-position="right"
-                      :min="1"
-                      :max="10"
-                      style="width: 25%"
-                    />
+                    <el-input-number v-model="maxCapacity" controls-position="right" :min="1" :max="10" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -78,7 +73,7 @@
   </el-dialog>
 </template>
 <script>
-import { getOperationType } from '@/api/table.js'
+import { getSellDetails } from '@/api/replenish'
 export default {
   name: 'addOrder',
   props: {
@@ -108,7 +103,9 @@ export default {
         textarea: ''
       },
       formLabelWidth: '110px',
-      typeList: []
+      typeList: [], //工单类型
+      replenishment: [], //补货详情
+      maxCapacity: 10
     }
   },
   created() {
@@ -118,11 +115,22 @@ export default {
     handleClose() {
       this.$emit('addOrderShowClose')
     },
+    // 工单类型
     handleChange() {},
     async getOperationType() {
-      const { data } = await getOperationType()
+      const { data } = await getSellDetails()
       this.typeList = data
       console.log(data)
+    },
+    // 获取补货详情
+    async showdialogList(id) {
+      this.dialogListVisible = true
+      const { data } = await getSellDetails(id)
+      this.replenishment = data
+    },
+    // 处理当前数量和补满数量的差值
+    formatter(row, column) {
+      return row.maxCapacity - row.currentCapacity
     }
   },
   computed: {},
@@ -154,5 +162,25 @@ export default {
   padding: 0;
   background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
   border: none;
+}
+/deep/.el-dialog {
+  border-radius: 10px;
+}
+.el-dialog {
+  position: relative;
+  margin: 0 auto 50px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  box-sizing: border-box;
+  .el-dialog__header {
+    padding: 20px;
+    padding-bottom: 10px;
+  }
+  .el-dialog__body {
+    padding: 20px 20px 30px;
+    color: #666;
+    font-size: 14px;
+    word-break: break-all;
+  }
 }
 </style>

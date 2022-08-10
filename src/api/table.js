@@ -16,6 +16,7 @@ export function getOrderList(params) {
     params
   })
 }
+
 // /api/task-service/task/search?pageIndex=1&pageSize=10&isRepair=false
 /**
  * 获取运营工单
@@ -45,9 +46,6 @@ export function getCheckDetails(id) {
   })
 }
 
-
-
-// ----------------------------------------
 /**
  * 获取工单状态
  * @returns Promise对象
@@ -67,4 +65,7 @@ export function getOperationType() {
     url: '/task-service/taskType/list'
   })
 }
+
+
+
 
