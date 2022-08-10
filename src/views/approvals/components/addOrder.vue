@@ -12,20 +12,6 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="工单类型:" :label-width="formLabelWidth">
-<<<<<<< HEAD
-        <el-dropdown style="width: 500px">
-          <el-input v-model="detailsFromCheck.orderStatus" autocomplete="off" placeholder="请选择"></el-input>
-          <el-dropdown-menu slot="dropdown" style="width: 500px">
-            <el-dropdown-item>补货工单</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-form-item>
-      <el-form-item label="补货数量:" :label-width="formLabelWidth">
-        <div>
-          <i class="el-icon-document"></i>
-          <span>补货清单</span>
-=======
-        <!-- v-if="item.type === this.type" -->
         <el-select
           style="width: 500px"
           v-model="detailsFromCheck.orderStatus"
@@ -58,7 +44,6 @@
               </el-table>
             </el-dialog>
           </el-button>
->>>>>>> feature/approvals
         </div>
       </el-form-item>
       <el-form-item label="运营人员:" :label-width="formLabelWidth">
@@ -76,10 +61,7 @@
           placeholder="请输入内容"
           style="width: 500px"
           v-model="addOrder.textarea"
-<<<<<<< HEAD
-=======
           maxlength="40"
->>>>>>> feature/approvals
         ></el-input>
       </el-form-item>
     </el-form>
@@ -90,10 +72,7 @@
   </el-dialog>
 </template>
 <script>
-<<<<<<< HEAD
-=======
 import { getSellDetails } from '@/api/replenish'
->>>>>>> feature/approvals
 export default {
   name: 'addOrder',
   props: {
@@ -104,8 +83,6 @@ export default {
     detailsFromCheck: {
       type: [Object, Array],
       required: true
-<<<<<<< HEAD
-=======
     },
     dialogListVisible: {
       type: Boolean,
@@ -114,7 +91,6 @@ export default {
     type: {
       type: Number,
       required: true
->>>>>>> feature/approvals
     }
   },
   data() {
@@ -125,15 +101,6 @@ export default {
         people: '',
         textarea: ''
       },
-<<<<<<< HEAD
-      formLabelWidth: '110px'
-    }
-  },
-  created() {},
-  methods: {
-    handleClose() {
-      this.$emit('addOrderShowClose')
-=======
       formLabelWidth: '110px',
       typeList: [], //工单类型
       replenishment: [], //补货详情
@@ -163,7 +130,6 @@ export default {
     // 处理当前数量和补满数量的差值
     formatter(row, column) {
       return row.maxCapacity - row.currentCapacity
->>>>>>> feature/approvals
     }
   },
   computed: {},
@@ -173,12 +139,9 @@ export default {
 }
 </script>
 <style scoped lang="less">
-<<<<<<< HEAD
-=======
 .el-icon-tickets {
   color: #5f84ff;
 }
->>>>>>> feature/approvals
 .dialog-footer {
   margin-top: -40px;
   text-align: center;
@@ -199,8 +162,7 @@ export default {
   background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
   border: none;
 }
-<<<<<<< HEAD
-=======
+
 /deep/.el-dialog {
   border-radius: 10px;
 }
@@ -221,5 +183,4 @@ export default {
     word-break: break-all;
   }
 }
->>>>>>> feature/approvals
 </style>

@@ -69,19 +69,6 @@ export const editregionApi = (id, data) => {
 }
 
 /**
-=======
- * 修改区域
- * @returns Promise对象
- */
-export const editregionApi = (id, data) => {
-  return request({
-    method: 'PUT',
-    url: `/vm-service/region/${id}`,
-    data
-  })
-}
-/**
->>>>>>> feature/approvals
  * 商圈列表
  * @returns Promise对象
  */
@@ -102,7 +89,6 @@ export const NodeListApi = (data) => {
     params: data
   })
 }
-<<<<<<< HEAD
 /**
  * 点位详情
  * @returns Promise对象
@@ -191,5 +177,3 @@ export const editDpartApi = (id, data) => {
     data
   })
 }
-=======
->>>>>>> feature/approvals
