@@ -95,20 +95,21 @@
           </div>
         </el-col>
         <!-- 中间和右边 -->
-        <el-col :span="6">
-          <div class="grid-content bg-purple" style="height: 538px; margin-top: -170px">
+        <el-col :span="6" class="aside">
+          <div class="grid-content bg-purple" style="height: 560px; margin-top: -180px">
             <div class="title">
               商品热榜
               <span>{{ endatd }} ~ {{ statd }}</span>
             </div>
-            <el-table v-for="(item, index) in SkuTop" :key="index" :data="SkuTop" style="width: 100%">
+            <el-table style="width: 100%" :data="SkuTop">
+              <template v-for="item in SkuTop"></template>
               <el-table-column
                 prop="order"
-                width="50"
+                width="30"
                 style="background: url(~@/assets/order/4.png)"
                 type="index"
               ></el-table-column>
-              <el-table-column prop="skuName" width="120" class-name="name"></el-table-column>
+              <el-table-column prop="skuName" width="110" class-name="name"></el-table-column>
               <el-table-column prop="count" class-name="count"></el-table-column>
             </el-table>
           </div>
@@ -245,12 +246,14 @@ export default {
     async getnodeCollect() {
       const res = await getnodeCollect()
       this.nodeCollect = res.data
+      console.log(res.data)
       this.myPieChart()
     },
     // top排行
     async getSkuTop() {
       const res = await getSkuTop(10, this.endatd, this.statd)
       this.SkuTop = res.data
+      // console.log(this.SkuTop)
     },
     // 获取工单数量
     async getUserWorks() {
@@ -288,7 +291,7 @@ export default {
           text: '销售额分布',
           left: 'center'
         },
-
+        grid: { top: '18%', left: '19%', right: '0%', bottom: '24%' },
         xAxis: {
           type: 'category',
           data: this.cylinderXAxis
@@ -326,7 +329,7 @@ export default {
           text: '销售额趋势图',
           left: 'center'
         },
-        grid: { top: '18%', left: '17%', right: '2%', bottom: '24%' },
+        grid: { top: '18%', left: '17%', right: '0%', bottom: '24%' },
         xAxis: {
           type: 'category',
           data: this.xAxis,
@@ -356,10 +359,10 @@ export default {
         title: {
           left: 'left'
         },
-        grid: { top: '10%', left: '22%', right: '2%', bottom: '24%' },
+
         tooltip: {
           trigger: 'item',
-          formatter: '{b}<br/>总占比 : {c}% '
+          formatter: '{b}<br/>总占比 : {d}% '
         },
         toolbox: {
           show: true,
@@ -408,11 +411,12 @@ export default {
     .cell {
       display: inline-block;
       text-align: center;
-      width: 21px;
+      width: 22px;
       height: 20px;
       margin-left: 2px;
       padding-left: 6px;
       text-align: center;
+      white-space: nowrap;
       font-size: 12px;
       font-family: zihun143-zhengkuchaojihei, zihun143;
       font-weight: 400;
@@ -485,14 +489,11 @@ export default {
 .empenty {
   width: 100%;
   height: 280px;
-  // background-color: red;
 }
 .cooperate {
   width: 100%;
   height: 280px;
-
   margin-top: 25px;
-  // background-color: red;
   display: flex;
   .pieChart {
     flex: 3;
@@ -539,6 +540,9 @@ export default {
   font-family: PingFangSC-Semibold, PingFang SC;
   font-weight: 600;
   color: #333;
+  padding-top: 17px;
+  padding-bottom: -4px;
+
   span {
     margin-left: 10px;
     font-size: 12px;
@@ -637,7 +641,7 @@ export default {
 .grid-content {
   min-height: 36px;
   border-radius: 20px;
-  padding: 20px;
+  padding: 0 20px;
 }
 .row-bg {
   padding: 10px 0;
