@@ -1,6 +1,6 @@
 import Layout from "@/layout";
 export default {
-  path: "/report/index",
+  path: "/social",
   component: Layout,
   children: [
     {

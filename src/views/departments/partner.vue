@@ -152,6 +152,7 @@ export default {
         name: this.value
       })
       this.tableData = data.currentPageRecords
+      await this.$store.dispatch('user/getPartner', this.tableData)
     },
     //重置密码
     ResetPwd(row) {
