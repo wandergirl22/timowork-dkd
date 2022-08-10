@@ -1,26 +1,33 @@
 <template>
   <el-table
-    ref="TableData"
+    ref="multipleTable"
     :data="deviceList"
     tooltip-effect="dark"
     style="width: 100%"
     @selection-change="handleSelectionChange"
   >
-    <el-table-column type="selection" width="60"></el-table-column>
     <el-table-column type="index" label="序号" width="100"></el-table-column>
-    <el-table-column prop="innerCode" label="设备编号" width="160"></el-table-column>
-    <el-table-column prop="type.name" label="设备型号" width="160"></el-table-column>
-    <el-table-column prop="node.name" label="详细地址" width="160" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="ownerName" label="合作商" width="160"></el-table-column>
-    <el-table-column :formatter="Status" prop="vmStatus" label="设备状态" width="160"></el-table-column>
+    <el-table-column prop="name" label="型号名称" width="160"></el-table-column>
+    <el-table-column prop="model" label="型号编码" width="160"></el-table-column>
+    <el-table-column prop="image" label="设备图片" width="160" show-overflow-tooltip>
+      <template slot-scope="scope">
+        <!-- <img :src="scoped.row.image" alt="" /> -->
+        <span>
+          <!-- {{ scope.row.image }} -->
+          <img class="pic" :src="scope.row.image" alt="" />
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column prop="vmRow" label="货道行" width="160"></el-table-column>
+    <el-table-column prop="vmCol" label="货道列" width="160"></el-table-column>
+    <el-table-column prop="channelMaxCapacity" label="设备容量" width="160"></el-table-column>
     <el-table-column prop="name" label="操作" width="160">
       <!-- <a style="color: blue" @click="$emit('cargoLanes')">货道</a>
       <a class="opera" @click="$emit('tactics', index)">策略</a>
       <a class="opera">修改</a> -->
       <template slot-scope="scope">
-        <el-button @click="handleEdit(scope.$index, scope.row)">货道</el-button>
-        <el-button type="danger" @click="$emit('tactics', scope.row)">策略</el-button>
-        <el-button type="danger" @click="$emit('cancel', scope.row)">修改</el-button>
+        <el-button style="color: blue" @click="$emit('showButton', scope.row)">修改</el-button>
+        <el-button style="color: red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -43,10 +50,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleEdit(index, row) {
-      console.log(index, row)
-      console.log(this.$refs.TableData.selection)
-    },
+    // handleEdit(index, row) {
+    //   console.log(index, row)
+    // },
     handleDelete(index, row) {
       console.log(index, row)
     },
@@ -68,5 +74,9 @@ export default {
 .el-button {
   border: 0 solid #000;
   padding: 0;
+}
+.pic {
+  width: 24px;
+  border-radius: 50%;
 }
 </style>
