@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <template>
        <el-dialog title="新增工单" :visible="dialogFormVisible" 
         custom-class="el-dialog1"
@@ -26,7 +26,6 @@
 			    >
                  <el-dropdown-item  >补货工单</el-dropdown-item>
                </el-dropdown-menu>
-               </el-dropdown-menu>
               </el-dropdown>
             </el-form-item>
             <el-form-item label="补货数量:" :label-width="formLabelWidth">
@@ -41,7 +40,6 @@
                   ></el-input>
                <el-dropdown-menu slot="dropdown"  style="width:500px" >
                  <el-dropdown-item >无数据</el-dropdown-item>
-               </el-dropdown-menu>
                </el-dropdown-menu>
               </el-dropdown>
             </el-form-item>
@@ -62,7 +60,7 @@
         </el-dialog>
 </template>
 <script>
-import { type } from 'os'
+
 export default {
   name: 'addOrder',
   props: {
