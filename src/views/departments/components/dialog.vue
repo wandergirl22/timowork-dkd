@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-dialog title="新增区域" :visible="visiable" width="50%" :before-close="handleClose">
->>>>>>> feature/approvals
       <el-form ref="form" :model="formData" :rules="formRules" label-width="100px">
         <el-form-item label="区域名称" prop="regionName">
           <el-input placeholder="输入" v-model="formData.regionName"></el-input>
